@@ -103,7 +103,10 @@ class Lapsim:
         ax = (np.minimum(self.x.fxtyres,self.x.fxPT) - self.x.fxdrag)/self.kart.m #add various drag components
         
         statevars = vars(self.x)
-        np.put(self.xvec, range(len(statevars)) , list(statevars.values()) )
+        #numpy >=1.24 no longer builds an object array from a ragged sequence:
+        #the state mixes scalars with size-1 arrays, so flatten explicitly what
+        #numpy <=1.23 coerced implicitly. Logging only, no effect on dynamics.
+        np.put(self.xvec, range(len(statevars)) , [np.ravel(v)[0] for v in statevars.values()] )
         
         return ax
     
