@@ -1,0 +1,27 @@
+# Historial de control de versiones: no debe entrar en la imagen.
+.git/
+.gitignore
+
+# Artefactos de planificación y configuración de herramientas: no los usa la
+# simulación y engordan el contexto de build.
+openspec/
+.claude/
+
+# Resultados de ejecuciones locales: el contenedor escribe en su propio volumen.
+output/
+
+# Entorno local y caché de Python.
+.venv/
+venv/
+**/__pycache__/
+**/*.py[cod]
+.env
+.env.*
+
+# Figura de referencia del autor original: documentación del README, no dato de
+# entrada del motor.
+data/example1result.png
+
+# Dependencias originales sin fijar (el motor en contenedor usa
+# requirements-docker.txt).
+requirements.txt

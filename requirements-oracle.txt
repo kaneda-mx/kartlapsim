@@ -1,0 +1,11 @@
+# Pila de CALIBRACIÓN, no de despliegue.
+#
+# Última serie de NumPy que acepta construir un array de objetos a partir de
+# una lista irregular (deprecado desde 1.20, error desde 1.24). Es la versión
+# donde el motor ORIGINAL, sin parchear, sí corre, y por eso sirve de línea
+# base para demostrar que la corrección no altera ningún número.
+#
+# Sólo difiere de requirements-docker.txt en NumPy.
+numpy==1.23.5
+scipy==1.11.4
+matplotlib==3.8.4

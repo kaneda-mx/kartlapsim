@@ -1,0 +1,53 @@
+# Contenedor de validación del motor: ejecuta una simulación, escribe los
+# resultados en el volumen y TERMINA.
+#
+# Esto NO es el stack de Portainer. La estrategia de despliegue depende de la
+# modalidad del entorno (Docker Standalone o Swarm), todavía sin confirmar: en
+# Swarm un servicio que termina se reinicia solo, así que un contenedor de un
+# disparo se declara de otra forma. Aquí se usa por CLI:
+#
+#   GIT_REV=$(git rev-parse --short HEAD) \
+#     docker compose -f compose.validate.yaml up --build
+name: kartlapsim-validate
+
+services:
+  validate:
+    build:
+      context: .
+      args:
+        GIT_REV: ${GIT_REV:-desconocida}
+    image: kartlapsim:validate
+    # El cálculo termina: reiniciarlo sólo repetiría la misma simulación.
+    restart: "no"
+    command:
+      - python
+      - tools/run_sim.py
+      - --final-drive
+      - "6.5"
+      - "7.1"
+      - --baseline
+      - "7.1"
+    volumes:
+      # Volumen nombrado, no bind mount: hereda del directorio de la imagen la
+      # propiedad del usuario sin privilegios (uid 10001) y la escritura
+      # funciona sin elevar permisos.
+      - kartlapsim-output:/app/output
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+    # Proceso de cálculo puro: no necesita capacidades del kernel ni escalar
+    # privilegios.
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    deploy:
+      resources:
+        limits:
+          cpus: "1.0"
+          memory: 1g
+
+volumes:
+  kartlapsim-output:
